@@ -4,10 +4,10 @@ var CoM = require("../../index");
 
 describe("Generic Test", function() {
   it("Testing", function(done) {
-    CoM.log("[log] Success!");
-    CoM.debug("[debug] Success!");
-    CoM.warn("[warn] Success!");
-    CoM.error("[error] Success!");
+    CoM.log("Log Message |disco:|Success!|:disco|");
+    CoM.debug("Debugging Message |green:|Success!|:green|");
+    CoM.warn("Warning Message |yellow:|Success!|:yellow|");
+    CoM.error("Error/Fatal Message |red:|Success!|:red|");
     done();
   });
 });
