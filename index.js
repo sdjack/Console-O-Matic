@@ -6,17 +6,6 @@ const COLORS = require("./colorMap.json");
 const DEFAULT_NAME = "Console";
 const TAG_EXPR = /\|([\w]*?)\:\|([\w\W\s\S]*?)\|\:\1\|/;
 const RESET_COLOR = "\x1b[0m";
-const PRIVATE_COLORS = {
-  black: "\x1b[30m",
-  grey: "\x1b[90m",
-  white: "\x1b[97m",
-  red: "\x1b[91m",
-  yellow: "\x1b[93m",
-  green: "\x1b[92m",
-  cyan: "\x1b[96m",
-  blue: "\x1b[94m",
-  magenta: "\x1b[95m"
-};
 const DISCO = [
   COLORS.red,
   COLORS.orange,
@@ -28,14 +17,26 @@ const DISCO = [
   COLORS.violet,
   COLORS.magenta
 ];
+const STATIC_COLORS = {
+  black: "\x1b[30m",
+  grey: "\x1b[90m",
+  white: "\x1b[97m",
+  red: "\x1b[91m",
+  yellow: "\x1b[93m",
+  green: "\x1b[92m",
+  cyan: "\x1b[96m",
+  blue: "\x1b[94m",
+  magenta: "\x1b[95m"
+};
 /**
  * getColorCode
  * @function getColorCode
  * @return {String} output
  * @memberof Console_O_Matic
  */
-function getColorCode(name, bg = false) {
+function getColorCode(tag, bg = false) {
   const preset = bg ? "48;5;" : "38;5;";
+  const name = tag.toLowerCase();
   const colorIndex = COLORS[name] || 7;
   return `\x1b[${preset}${colorIndex}m`;
 }
@@ -51,7 +52,7 @@ function getTimestamp() {
   const minutes = date.getMinutes();
   const seconds = date.getSeconds();
 
-  return "[" + PRIVATE_COLORS.grey +
+  return "[" + STATIC_COLORS.grey +
         ((hour < 10) ? "0" + hour : hour) +
         ":" +
         ((minutes < 10) ? "0" + minutes : minutes) +
@@ -102,7 +103,7 @@ function colorFormat(input, override = null) {
     tagApplied = true;
   }
   if (!tagApplied) {
-    const color = override || PRIVATE_COLORS.white;
+    const color = override || STATIC_COLORS.white;
     output = `${color}${output}${RESET_COLOR}`;
   }
   return output;
@@ -125,6 +126,28 @@ function CoM() {
  */
 CoM.prototype.setName = function(name) {
   this.title = name;
+}
+
+/**
+ * Console_O_Matic.space
+ * @function space
+ * @memberof Console_O_Matic
+ */
+CoM.prototype.space = function() {
+  console.log(`${STATIC_COLORS.black}--------------------------------${RESET_COLOR}`);
+}
+
+/**
+ * Console_O_Matic.divider
+ * @function divider
+ * @memberof Console_O_Matic
+ */
+CoM.prototype.divider = function() {
+  let msg = "";
+  for (let i = 255; i > 231; i -= 1) {
+    msg += `\x1b[38;5;${i}m-${RESET_COLOR}`;
+  }
+  console.log(msg);
 }
 
 /**
@@ -152,9 +175,9 @@ CoM.prototype.debug = function(...args) {
   const self = this;
   let msg = "";
   for (let i  = 0; i < args.length; i += 1) {
-    msg += colorFormat(args[i], PRIVATE_COLORS.green);
+    msg += colorFormat(args[i], STATIC_COLORS.green);
   }
-  console.log(getTimestamp() + `${PRIVATE_COLORS.green}${self.title}${RESET_COLOR}: ${msg}`);
+  console.debug(getTimestamp() + `${STATIC_COLORS.green}${self.title}${RESET_COLOR}: ${msg}`);
 }
 
 /**
@@ -167,9 +190,9 @@ CoM.prototype.warn = function(...args) {
   const self = this;
   let msg = "";
   for (let i  = 0; i < args.length; i += 1) {
-    msg += colorFormat(args[i], PRIVATE_COLORS.yellow);
+    msg += colorFormat(args[i], STATIC_COLORS.yellow);
   }
-  console.log(getTimestamp() + `${PRIVATE_COLORS.yellow}${self.title}${RESET_COLOR}: ${msg}`);
+  console.warn(getTimestamp() + `${STATIC_COLORS.yellow}${self.title}${RESET_COLOR}: ${msg}`);
 }
 
 /**
@@ -182,9 +205,9 @@ CoM.prototype.error = function(...args) {
   const self = this;
   let msg = "";
   for (let i  = 0; i < args.length; i += 1) {
-    msg += colorFormat(args[i], PRIVATE_COLORS.red);
+    msg += colorFormat(args[i], STATIC_COLORS.red);
   }
-  console.log(getTimestamp() + `${PRIVATE_COLORS.red}${self.title}${RESET_COLOR}: ${msg}`);
+  console.error(getTimestamp() + `${STATIC_COLORS.red}${self.title}${RESET_COLOR}: ${msg}`);
 }
 
 module.exports = new CoM();
